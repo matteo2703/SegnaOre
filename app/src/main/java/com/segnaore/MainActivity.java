@@ -38,5 +38,8 @@ public class MainActivity extends AppCompatActivity {
             tot+=(" e 1/2");
         }
         totale.setText(tot);
+
+        //TODO impostare per inserire le ore della mattina e del pomeriggio
+        //TODO aggiungere salvataggio e modifica
     }
 }
