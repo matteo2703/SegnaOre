@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,9 +39,14 @@ public class MainActivity extends AppCompatActivity {
         String dataAttuale = giorno+" "+mesi[mese]+" "+anno;
         data.setText(dataAttuale);
 
+        //cambiare gioranta
+        data.setOnClickListener(v -> {
+            //TODO selezionare goirno e renderlo il giorno corrente
+        });
+
         //ottenere le ore del mese corrente
         final TextView totale = findViewById(R.id.totale);
-        totale.setText(oreDelMese(mese));
+        totale.setText(oreDelMese(mese,anno));
 
         //inserire ore per mattina e pomeriggio
         //inizializzazione componenti
@@ -83,7 +89,13 @@ public class MainActivity extends AppCompatActivity {
                 Giornata giornata = new Giornata(giorno,mese,anno,Double.parseDouble(matt),Double.parseDouble(pome));
                 db.giornataDao().insertAll(giornata);
             }
-            totale.setText(oreDelMese(mese));
+            totale.setText(oreDelMese(mese,anno));
+        });
+
+        final ImageButton storico = findViewById(R.id.storico);
+        storico.setOnClickListener(v -> {
+            //TODO visualizzare lo storico dell'anno + dicembre dell'anno precedente
+            openStorico();
         });
     }
 
@@ -104,14 +116,19 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    public String oreDelMese(int mese){
+    public String oreDelMese(int mese,int anno){
         final AppDatabase db = AppDatabase.getInstance(this);
-        ArrayList<Giornata> list = new ArrayList<>(db.giornataDao().getMese(mese));
+        ArrayList<Giornata> list = new ArrayList<>(db.giornataDao().getMese(mese,anno));
         double oreTotali=0;
         for (int i=0;i<list.size();i++){
             oreTotali+=list.get(i).getMattina()+list.get(i).getPomeriggio();
         }
         return "Totale ore del mese: "+oreTotali;
+    }
+
+    public void openStorico(){
+        StoricoDialog dialog = new StoricoDialog();
+        dialog.show(getSupportFragmentManager(),"");
     }
 
     public void hideSoftKeyboard(Activity activity){

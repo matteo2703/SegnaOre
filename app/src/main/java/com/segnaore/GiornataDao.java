@@ -10,8 +10,8 @@ import java.util.List;
 @Dao
 public interface GiornataDao {
 
-    @Query("SELECT * FROM giornata WHERE mese = :mese")
-    List<Giornata> getMese(int mese);
+    @Query("SELECT * FROM giornata WHERE mese = :mese AND anno = :anno")
+    List<Giornata> getMese(int mese,int anno);
 
     @Query("SELECT * FROM giornata WHERE anno = :anno AND mese = :mese AND giorno = :giorno")
     List<Giornata> getGiornata(int anno,int mese,int giorno);
