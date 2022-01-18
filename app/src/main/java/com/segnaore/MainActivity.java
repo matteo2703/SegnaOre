@@ -11,16 +11,15 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     String[] mesi = {"Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"};
     private String matt, pome;
-    private double oreMattina, orePomeriggio = 0;
+    private int anno, mese, giorno = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,25 +28,19 @@ public class MainActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+        final AppDatabase db = AppDatabase.getInstance(this);
+
         //ottenere la data di oggi
         final TextView data = findViewById(R.id.data);
-        String dataAttuale = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+" "+mesi[Calendar.getInstance().get(Calendar.MONTH)]+" "+Calendar.getInstance().get(Calendar.YEAR);
+        anno=Calendar.getInstance().get(Calendar.YEAR);
+        mese=Calendar.getInstance().get(Calendar.MONTH);
+        giorno=Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        String dataAttuale = giorno+" "+mesi[mese]+" "+anno;
         data.setText(dataAttuale);
 
         //ottenere le ore del mese corrente
-        final AppDatabase db = AppDatabase.getInstance(this);
-        ArrayList<Giornata> list = new ArrayList<>(db.giornataDao().getMese(Calendar.getInstance().get(Calendar.MONTH)));
         final TextView totale = findViewById(R.id.totale);
-        int oreTotali=0;
-        for (int i=0;i<list.size();i++){
-            oreTotali+=list.get(i).getOre_doppie();
-        }
-        boolean mezzaOra = oreTotali%2!=0;
-        String tot = "Totale ore del mese: "+oreTotali/2;
-        if (mezzaOra){
-            tot+=(" e 1/2");
-        }
-        totale.setText(tot);
+        totale.setText(oreDelMese(mese));
 
         //inserire ore per mattina e pomeriggio
         //inizializzazione componenti
@@ -73,18 +66,52 @@ public class MainActivity extends AppCompatActivity {
         });
         pomeriggio.setOnItemClickListener((parent, view, position, id) ->pome = (String) parent.getItemAtPosition(position));
 
-        final Button salva=findViewById(R.id.salva);
-        //TODO salvare le ore nel giorno stabilito e permettere la modifica
-        salva.setOnClickListener(v -> {
-            if (matt!=null){
-                oreMattina = Double.parseDouble(matt);
-            }
-            if (pome!=null){
-                orePomeriggio=Double.parseDouble(pome);
-            }
+        if(db.giornataDao().getGiornata(anno,mese,giorno).size()!=0){
+            List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
+            mattina.setText(getOrario(giornata.get(0),0));
+            pomeriggio.setText(getOrario(giornata.get(0),1));
+        }
 
-            Toast.makeText(this, "Ore totali di oggi: "+(oreMattina+orePomeriggio), Toast.LENGTH_SHORT).show();
+        final Button salva=findViewById(R.id.salva);
+        ///controllo se nel giorno corrente erano già state salvate delle ore
+        salva.setOnClickListener(v -> {
+
+            if(db.giornataDao().getGiornata(anno,mese,giorno).size()!=0){
+                List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
+                db.giornataDao().updateGioranta(Double.parseDouble(matt),Double.parseDouble(pome),giornata.get(0).getId());
+            }else{
+                Giornata giornata = new Giornata(giorno,mese,anno,Double.parseDouble(matt),Double.parseDouble(pome));
+                db.giornataDao().insertAll(giornata);
+            }
+            totale.setText(oreDelMese(mese));
         });
+    }
+
+    public String getOrario(Giornata giornata, int parteDellaGiornata){
+        //parte della gioranta: 0=mattina, 1=pomeriggio
+        String[] ore = getResources().getStringArray(R.array.ore);
+        for (String s : ore) {
+            if (parteDellaGiornata == 0) {
+                if (giornata.getMattina() == Double.parseDouble(s)) {
+                    return s;
+                }
+            } else {
+                if (giornata.getPomeriggio() == Double.parseDouble(s)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    public String oreDelMese(int mese){
+        final AppDatabase db = AppDatabase.getInstance(this);
+        ArrayList<Giornata> list = new ArrayList<>(db.giornataDao().getMese(mese));
+        double oreTotali=0;
+        for (int i=0;i<list.size();i++){
+            oreTotali+=list.get(i).getMattina()+list.get(i).getPomeriggio();
+        }
+        return "Totale ore del mese: "+oreTotali;
     }
 
     public void hideSoftKeyboard(Activity activity){

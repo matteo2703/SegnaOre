@@ -6,6 +6,8 @@
     <string name="salva">Salva</string>
 
     <string-array name="ore">
+        <item>0</item>
+        <item>0.5</item>
         <item>1</item>
         <item>1.5</item>
         <item>2</item>

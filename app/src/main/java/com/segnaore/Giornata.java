@@ -11,9 +11,9 @@ public class Giornata {
     int id;
 
     @ColumnInfo(name = "mattina")
-    int mattina;
+    double mattina;
     @ColumnInfo(name = "pomeriggio")
-    int pomeriggio;
+    double pomeriggio;
 
     @ColumnInfo(name = "giorno")
     int giorno;
@@ -21,19 +21,16 @@ public class Giornata {
     int mese;
     @ColumnInfo(name = "anno")
     int anno;
-    @ColumnInfo(name = "ore")
-    int ore_doppie;
 
-    public Giornata(int giorno, int mese, int anno, int mattina, int pomeriggio){
+    public Giornata(int giorno, int mese, int anno, double mattina, double pomeriggio){
         this.giorno=giorno;
         this.mese=mese;
         this.anno=anno;
         this.mattina=mattina;
         this.pomeriggio=pomeriggio;
-        this.ore_doppie=mattina+pomeriggio;
     }
 
-    public int getMattina() {
+    public double getMattina() {
         return mattina;
     }
 
@@ -41,7 +38,7 @@ public class Giornata {
         this.mattina = mattina;
     }
 
-    public int getPomeriggio() {
+    public double getPomeriggio() {
         return pomeriggio;
     }
 
@@ -79,13 +76,5 @@ public class Giornata {
 
     public void setAnno(int anno) {
         this.anno = anno;
-    }
-
-    public int getOre_doppie() {
-        return ore_doppie;
-    }
-
-    public void setOre_doppie(int ore_doppie) {
-        this.ore_doppie = ore_doppie;
     }
 }
