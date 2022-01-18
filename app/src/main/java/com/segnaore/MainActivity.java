@@ -2,6 +2,7 @@ package com.segnaore;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -39,9 +42,14 @@ public class MainActivity extends AppCompatActivity {
         String dataAttuale = giorno+" "+mesi[mese]+" "+anno;
         data.setText(dataAttuale);
 
-        //cambiare gioranta
-        data.setOnClickListener(v -> {
-            //TODO selezionare goirno e renderlo il giorno corrente
+        //pulizia generale dei dati inutili
+        final ImageButton pulizia = findViewById(R.id.pulizia);
+        pulizia.setOnClickListener(v -> {
+            Toast.makeText(this, "Pulizia dei dati vecchi in corso...", Toast.LENGTH_SHORT).show();
+            db.giornataDao().pulizia(Calendar.getInstance().get(Calendar.YEAR)-2,mesi.length);
+            for (int i = 0;i<mesi.length-1;i++){
+                db.giornataDao().pulizia(Calendar.getInstance().get(Calendar.YEAR)-1,i);
+            }
         });
 
         //ottenere le ore del mese corrente
@@ -53,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
         final AutoCompleteTextView mattina, pomeriggio;
         mattina = findViewById(R.id.mattina);
         pomeriggio = findViewById(R.id.pomeriggio);
+
+        if(db.giornataDao().getGiornata(anno,mese,giorno).size()!=0){
+            List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
+            mattina.setText(getOrario(giornata.get(0),0));
+            pomeriggio.setText(getOrario(giornata.get(0),1));
+        }
+
         mattina.setInputType(InputType.TYPE_NULL);
         pomeriggio.setInputType(InputType.TYPE_NULL);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
@@ -72,12 +87,6 @@ public class MainActivity extends AppCompatActivity {
         });
         pomeriggio.setOnItemClickListener((parent, view, position, id) ->pome = (String) parent.getItemAtPosition(position));
 
-        if(db.giornataDao().getGiornata(anno,mese,giorno).size()!=0){
-            List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
-            mattina.setText(getOrario(giornata.get(0),0));
-            pomeriggio.setText(getOrario(giornata.get(0),1));
-        }
-
         final Button salva=findViewById(R.id.salva);
         ///controllo se nel giorno corrente erano già state salvate delle ore
         salva.setOnClickListener(v -> {
@@ -93,9 +102,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final ImageButton storico = findViewById(R.id.storico);
-        storico.setOnClickListener(v -> {
-            //TODO visualizzare lo storico dell'anno + dicembre dell'anno precedente
-            openStorico();
+        storico.setOnClickListener(v -> openStorico());
+
+        //cambiare gioranta
+        data.setOnClickListener(v -> {
+            final DatePickerDialog d = new DatePickerDialog(this,(view, year, month, dayOfMonth) -> {
+                anno=year;
+                mese=month;
+                giorno=dayOfMonth;
+            },anno,mese,giorno);
+            d.show();
+            d.setOnDismissListener(dialog -> {
+                String dataAttual = giorno+" "+mesi[mese]+" "+anno;
+                data.setText(dataAttual);
+                if(db.giornataDao().getGiornata(anno,mese,giorno).size()!=0){
+                    List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
+                    mattina.setText(getOrario(giornata.get(0),0));
+                    pomeriggio.setText(getOrario(giornata.get(0),1));
+                }else{
+                    mattina.setText(null);
+                    pomeriggio.setText(null);
+                }
+            });
         });
     }
 

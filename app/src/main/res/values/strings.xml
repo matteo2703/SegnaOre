@@ -4,6 +4,7 @@
     <string name="pomeriggio">POMERIGGIO</string>
     <string name="storico">storico</string>
     <string name="salva">Salva</string>
+    <string name="pulizia">Pulizia</string>
 
     <string-array name="ore">
         <item>0</item>

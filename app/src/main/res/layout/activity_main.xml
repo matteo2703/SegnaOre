@@ -115,6 +115,17 @@
         android:textSize="16sp"
         android:padding="20dp"/>
 
+    <ImageButton
+        android:id="@+id/pulizia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:src="@drawable/delete"
+        app:layout_constraintBottom_toBottomOf="@+id/totale"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/totale"
+        android:contentDescription="@string/pulizia" />
+
     <TextView
         android:id="@+id/totale"
         android:layout_width="wrap_content"

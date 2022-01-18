@@ -24,4 +24,7 @@ public interface GiornataDao {
 
     @Delete
     void delete(Giornata giornata);
+
+    @Query("DELETE FROM giornata WHERE anno = :anno AND mese = :mese")
+    void pulizia(int anno,int mese);
 }
