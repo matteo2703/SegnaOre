@@ -126,9 +126,28 @@ public class MainActivity extends AppCompatActivity {
                     List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
                     mattina.setText(getOrario(giornata.get(0),0));
                     pomeriggio.setText(getOrario(giornata.get(0),1));
+
+                    mattina.setInputType(InputType.TYPE_NULL);
+                    pomeriggio.setInputType(InputType.TYPE_NULL);
+                    final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<>(
+                            this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.ore));
+                    mattina.setAdapter(arrayAdapter2);
+                    pomeriggio.setAdapter(arrayAdapter2);
+                    mattina.setOnFocusChangeListener((v2, hasFocus) ->mattina.showDropDown());
+                    mattina.setOnClickListener(v2 -> {
+                        mattina.showDropDown();
+                        hideSoftKeyboard(this);
+                    });
+                    mattina.setOnItemClickListener((parent, view, position, id) ->matt = (String) parent.getItemAtPosition(position));
+                    pomeriggio.setOnFocusChangeListener((v2, hasFocus) ->pomeriggio.showDropDown());
+                    pomeriggio.setOnClickListener(v2 -> {
+                        pomeriggio.showDropDown();
+                        hideSoftKeyboard(this);
+                    });
+                    pomeriggio.setOnItemClickListener((parent, view, position, id) ->pome = (String) parent.getItemAtPosition(position));
                 }else{
-                    mattina.setText(null);
-                    pomeriggio.setText(null);
+                    mattina.setText("0");
+                    pomeriggio.setText("0");
                 }
             });
         });

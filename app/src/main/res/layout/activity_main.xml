@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/storico"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/storico" />
@@ -51,7 +51,7 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_weight="1"
                 android:text="@string/mattina"
-                android:textSize="16sp"/>
+                android:textSize="20sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/mattina_hint"
@@ -65,7 +65,8 @@
                     android:layout_height="wrap_content"
                     android:minWidth="100dp"
                     tools:ignore="LabelFor"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:textSize="20sp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,7 +84,7 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_weight="1"
                 android:text="@string/pomeriggio"
-                android:textSize="16sp"/>
+                android:textSize="20sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/pomeriggio_hint"
@@ -97,7 +98,8 @@
                     android:layout_height="wrap_content"
                     android:minWidth="100dp"
                     tools:ignore="LabelFor"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:textSize="20sp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,10 +134,10 @@
         android:id="@+id/totale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="20sp"
-        android:layout_marginBottom="20dp"/>
+        app:layout_constraintStart_toEndOf="@+id/pulizia" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
