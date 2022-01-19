@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
             mattina.setText(getOrario(giornata.get(0),0));
             pomeriggio.setText(getOrario(giornata.get(0),1));
         }
+        else{
+            mattina.setText("0");
+            pomeriggio.setText("0");
+        }
 
         mattina.setInputType(InputType.TYPE_NULL);
         pomeriggio.setInputType(InputType.TYPE_NULL);
@@ -87,15 +91,18 @@ public class MainActivity extends AppCompatActivity {
         });
         pomeriggio.setOnItemClickListener((parent, view, position, id) ->pome = (String) parent.getItemAtPosition(position));
 
+        //salvataggio/modifica
         final Button salva=findViewById(R.id.salva);
         ///controllo se nel giorno corrente erano già state salvate delle ore
         salva.setOnClickListener(v -> {
 
             if(db.giornataDao().getGiornata(anno,mese,giorno).size()!=0){
+                //modifica
                 List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
-                db.giornataDao().updateGioranta(Double.parseDouble(matt),Double.parseDouble(pome),giornata.get(0).getId());
+                db.giornataDao().updateGioranta(matt==null?0:Double.parseDouble(matt),pome==null?0:Double.parseDouble(pome),giornata.get(0).getId());
             }else{
-                Giornata giornata = new Giornata(giorno,mese,anno,Double.parseDouble(matt),Double.parseDouble(pome));
+                //salvataggio
+                Giornata giornata = new Giornata(giorno,mese,anno,matt==null?0:Double.parseDouble(matt),pome==null?0:Double.parseDouble(pome));
                 db.giornataDao().insertAll(giornata);
             }
             totale.setText(oreDelMese(mese,anno));
