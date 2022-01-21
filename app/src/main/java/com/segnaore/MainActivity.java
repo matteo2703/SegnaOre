@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                     List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
                     mattina.setText(getOrario(giornata.get(0),0));
                     pomeriggio.setText(getOrario(giornata.get(0),1));
+                    matt= String.valueOf(giornata.get(0).getMattina());
+                    pome= String.valueOf(giornata.get(0).getPomeriggio());
 
                     mattina.setInputType(InputType.TYPE_NULL);
                     pomeriggio.setInputType(InputType.TYPE_NULL);
