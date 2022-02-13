@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
             List<Giornata> giornata = db.giornataDao().getGiornata(anno,mese,giorno);
             mattina.setText(getOrario(giornata.get(0),0));
             pomeriggio.setText(getOrario(giornata.get(0),1));
+            matt= String.valueOf(giornata.get(0).getMattina());
+            pome= String.valueOf(giornata.get(0).getPomeriggio());
         }
         else{
             mattina.setText("0");
@@ -105,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
                 Giornata giornata = new Giornata(giorno,mese,anno,matt==null?0:Double.parseDouble(matt),pome==null?0:Double.parseDouble(pome));
                 db.giornataDao().insertAll(giornata);
             }
+            System.out.println(matt);
+            System.out.println(pome);
             totale.setText(oreDelMese(mese,anno));
         });
 
